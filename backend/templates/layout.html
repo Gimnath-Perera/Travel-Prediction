@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140851579-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-140851579-1');
+    </script>
+    <title>Travel!</title>
+    <link rel="icon" href="{{ url_for('static', filename='sand-favicon.png') }}">
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta prefix="og: http://ogp.me/ns#" property="og:image"
+        content="https://s3-us-west-2.amazonaws.com/datatostories/travel-app-screenshot.png" />
+    {% endblock %}
+</head>
+
+<body>
+    <div class="container-fluid" id="page-container">
+        <div class="row bg"></div>
+        <div class="row" id="contents">
+            <div class="col-md-4">
+                <div class="row container-fluid">
+                    <h2>Travel Recommender</h2>
+                    <p>You want to travel? But you can't decide where? Don't worry. Just type in your ideal vacation
+                        to
+                        the left and we will decide for you!</p>
+                </div>
+                <div class="input-items">
+                    <div class="form-group">
+                        <label for="description">Your Ideal Vacation:</label>
+                        <textarea class="form-control" id="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button id="submit" class="btn btn-primary">Go!</button>
+                    </div>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row container" style="display: none" id="result_div">
+                    <div class="col-md-8">
+                        <div class="container">
+                            <img id="citypic" style='height: 100%; width: 100%; object-fit: contain' />
+                        </div>
+                        <div class="row container hotel-titles">
+                            <h1>
+                                <span class="unarticulated"><b>#1 Suggestion: </b></span></h1><br>
+                            <h1 id="city_0"></h1>
+                            <h3 id="hotel_0">
+                            </h3>
+                            <br>
+                            <p id="tripadvisor_0"></p>
+                        </div>
+                        <div class="row container hotel-reviews">
+                            <div class="talk-bubble tri-right border round top-left-in">
+                                <div class="talktext" id="review_0">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <h2><span class="unarticulated"><b>Other Suggestions:</b></span></h2>
+                        <div class="row hotel-titles">
+                            <h3 id="city_1">
+                            </h3>
+                            <h5 id="hotel_1">
+                            </h5>
+                            <br>
+                            <p id="tripadvisor_1"></p>
+                        </div>
+                        <div class="row hotel-reviews">
+                            <div class="talk-bubble tri-right border round top-left-in">
+                                <div class="talktext" id="review_1">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row hotel-titles">
+                            <h3 id="city_2">
+                            </h3>
+                            <h5 id="hotel_2">
+                            </h5>
+                            <br>
+                            <p id="tripadvisor_2"></p>
+                        </div>
+                        <div class="row hotel-reviews">
+                            <div class="talk-bubble tri-right border round top-left-in">
+                                <div class="talktext" id="review_2">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="page-footer">
+            <div class="container-fluid bg-info">
+                <div class="row">
+                    <div class="col-md-12 py-5">
+                        <div class="flex-center">
+                            <a class="twitter">
+                                <a id="twitter" href="https://www.twitter.com/ysjeongg">
+                                    <i class="fab fa-twitter fa-lg mr-md-5 mr-3 fa-2x"> </i></a>
+                            </a>
+                            <a class="linkedin">
+                                <a id="linkedin" href="https://linkedin.com/in/youngsjeong">
+                                    <i class="fab fa-linkedin-in fa-lg mr-md-5 mr-3 fa-2x"> </i></a>
+                            </a>
+                            <a class="instagram">
+                                <a id="instagram" href="https://www.instagram.com/y0ungjeong/"> <i
+                                        class="fab fa-instagram fa-lg mr-md-5 mr-3 fa-2x"> </i></a>
+                            </a>
+                            <a class="github">
+                                <a id="github" href="https://github.com/youngjeong46">
+                                    <i class="fab fa-github fa-lg mr-md-5 mr-3 fa-2x"> </i></a>
+                            </a>
+                            <a class="blog">
+                                <a id="blog" href="https://datatostories.com">
+                                    <i class="fas fa-blog fa-lg fa-2x"></i></a>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright text-center py-3">© This is created by Young Jeong
+            </div>
+        </footer>
+    </div>
+</body>
+
+<script>
+    $('#submit').click(() => { send_data(); });
+    function send_data() {
+        let features = $('#description').val()
+        let quote_icon = "<i class='fas fa-quote-left fa-2x fa-pull-left'></i>"
+        let review_script = "Here's what one guest said: "
+        let pic_dict = {
+            "Playa Del Carmen": "https://cdn.aarp.net/content/dam/aarp/travel/international/2019/04/1140-playa-del-carmen-beach.imgcache.rev01b134dcd46ff59d439cea8c82e11a55.jpg",
+            "Aspen": "http://okl.scene7.com/is/image/OKL/122616_Aspen_Lead2?wid=1000&op_sharpen=1",
+            "Boracay": "https://lonelyplanetimages.imgix.net/mastheads/GettyImages-483535221_super.jpg?sharp=10&vib=20&w=1200",
+            "Whistler": "https://cdn.whistler.com/s3/images/og/whistler-village-winter.jpg",
+            "Gran Canaria": "https://www.luxair.lu/sites/default/files/styles/slide_images/public/2019-03/LG_Las-Palmas-de-Gran-Canaria_web_0.jpg?itok=UsboCyRb",
+            "Vienna": "https://lonelyplanetimages.imgix.net/mastheads/stock-photo-st-stephens-church-112868985.jpg?sharp=10&vib=20&w=1200",
+            "Budapest": "https://brightcove04pmdo-a.akamaihd.net/5104226627001/5104226627001_5515999951001_5214933106001-vs.jpg?pubId=5104226627001&videoId=5214933106001",
+            "Punta Cana": "https://www.excellenceresorts.com/fileadmin/_processed_/csm_Excellence-Punta-Cana-1920x1025-Destination-Beach-Overview-01_8f841b9890.jpg"
+        }
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/",  // Replace with URL of POST handler
+            dataType: "json",
+            async: true,
+            data: JSON.stringify(features),
+            success: (result) => {
+                for (x in result) {
+                    let city = result[x]['city']
+                    let hotel = result[x]['hotel']
+                    let review = result[x]['review']
+                    let truncated = ""
+                    $('#city_' + x).html(city);
+                    if (x == 0) {
+                        $('#citypic').attr("src", pic_dict[city]);
+                    }
+                    $('#hotel_' + x).html("Suggested Hotel: " + hotel);
+                    if (review.length > 250) {
+                        truncated += review.substr(0, 247) + '...';
+                    } else {
+                        truncated = review;
+                    }
+                    $('#review_' + x).html(quote_icon + truncated);
+                    $('#tripadvisor_' + x).html(review_script);
+                }
+                $('#result_div').show();
+            },
+            error: (result) => {
+                alert('There has been an error.');
+            }
+        })
+    }
+</script>
+
+</html>
