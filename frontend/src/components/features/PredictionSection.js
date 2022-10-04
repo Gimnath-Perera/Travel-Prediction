@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
@@ -54,7 +54,7 @@ export default ({
       <span tw="text-primary-500">1999.</span>
     </>
   ),
-  description = "Budapest, Hungary’s capital, is bisected by the River Danube. Its 19th-century Chain Bridge connects the hilly Buda district with flat Pest. A funicular runs up Castle Hill to Buda’s Old Town, where the Budapest History Museum traces city life from Roman times onward. Trinity Square is home to 13th-century Matthias Church and the turrets of the Fishermen’s Bastion, which offer sweeping views.",
+  description,
   primaryButtonText = "Learn More",
   primaryButtonUrl = "https://timerse.com",
   imageSrc = StatsIllustrationSrc,
@@ -65,7 +65,11 @@ export default ({
   imageInsideDiv = true,
   statistics = null,
   textOnLeft = false,
+  onReset,
+  data
 }) => {
+  const [isLoading, setIsLoading] = useState(false)
+
   // The textOnLeft boolean prop can be used to display either the text on left or right side of the image.
   //Change the statistics variable as you like, add or delete objects
   const defaultStatistics = [
@@ -100,7 +104,7 @@ export default ({
           <TextContent>
             {subheading && <Subheading>{subheading}</Subheading>}
             <Heading>{heading}</Heading>
-            <Description>{description}</Description>
+           {description && <Description>{description}</Description>}
             <Statistics>
               {statistics.map((statistic, index) => (
                 <Statistic key={index}>
@@ -109,8 +113,13 @@ export default ({
                 </Statistic>
               ))}
             </Statistics>
-            <PrimaryButton as="a" href={primaryButtonUrl}>
-              {primaryButtonText}
+            <PrimaryButton onClick={onReset}>
+            {isLoading ? <div class="flex justify-center items-center">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+               : primaryButtonText}
             </PrimaryButton>
           </TextContent>
         </TextColumn>

@@ -1,4 +1,5 @@
-import React from "react";
+import React,{useState} from "react";
+import axios from "axios";
 import tw from "twin.macro";
 import styled from "styled-components";
 import {
@@ -8,6 +9,7 @@ import {
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import StatsIllustrationSrc from "images/stats-illustration.svg";
 import { ReactComponent as SvgDotPattern } from "images/dot-pattern.svg";
+import { BASE_URL } from "constants/index.js";
 
 const Container = tw.div`relative`;
 const TwoColumn = tw.div`flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto py-20 md:py-24`;
@@ -36,7 +38,7 @@ const Input = tw.textarea`w-full px-8 py-4 rounded-lg font-medium bg-gray-100 bo
 
 const PrimaryButton = tw(
   PrimaryButtonBase
-)`mt-8 md:mt-10 text-sm inline-block mx-auto md:mx-0`;
+)`mt-6 md:mt-8 text-sm inline-block mx-auto md:mx-0`;
 
 const DecoratorBlob = styled(SvgDotPattern)((props) => [
   tw`w-20 h-20 absolute right-0 bottom-0 transform translate-x-1/2 translate-y-1/2 fill-current text-primary-500 -z-10`,
@@ -61,6 +63,7 @@ export default ({
   imageInsideDiv = true,
   statistics = null,
   textOnLeft = false,
+  onComplete
 }) => {
   const defaultStatistics = [
     {
@@ -79,6 +82,37 @@ export default ({
 
   if (!statistics) statistics = defaultStatistics;
 
+  const [vacationText, setVacationText] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async () => {
+    try {
+     if(vacationText){
+      setIsLoading(true)
+      const data = JSON.stringify({
+        "description": vacationText
+      });
+      
+      const config = {
+        method: 'post',
+        url: `${BASE_URL}/predict`,
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+
+       const result = await axios(config)
+       onComplete(result.data)
+       setIsLoading(false)
+     } else{
+
+     }
+    } catch (err) {
+      setIsLoading(false)
+    }
+
+  }
   return (
     <Container>
       <TwoColumn css={!imageInsideDiv && tw`md:items-center`}>
@@ -99,9 +133,17 @@ export default ({
               type="text"
               placeholder="Describe your ideal vacation ..."
               rows="8"
+              onChange={(e)=>setVacationText(e.target.value)}
+              value={vacationText}
             />
-            <PrimaryButton as="a" href={primaryButtonUrl}>
-              {primaryButtonText}
+            <PrimaryButton onClick={handleSubmit}>
+              {isLoading ? <div class="flex justify-center items-center">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+               : primaryButtonText}
+             
             </PrimaryButton>
           </TextContent>
         </TextColumn>
