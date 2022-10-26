@@ -1,36 +1,40 @@
-import React, {useState} from "react";
-import tw from "twin.macro";
+import React, { useState } from 'react';
+import tw from 'twin.macro';
 
-import AnimationRevealPage from "helpers/AnimationRevealPage.js";
-import Hero from "components/hero/TwoColumnWithVideo.js";
-import Features from "components/features/ThreeColSimple.js";
-import PredictionSection from "components/features/PredictionSection.js";
-import InputSection from "components/features/InputSection.js";
-import Testimonial from "components/testimonials/ThreeColumnWithProfileImage.js";
-import Footer from "components/footers/FiveColumnWithInputForm.js";
+import AnimationRevealPage from 'helpers/AnimationRevealPage.js';
+import Hero from 'components/hero/TwoColumnWithVideo.js';
+import Features from 'components/features/ThreeColSimple.js';
+import PredictionSection from 'components/features/PredictionSection.js';
+import InputSection from 'components/features/InputSection.js';
+import Testimonial from 'components/testimonials/ThreeColumnWithProfileImage.js';
+import Footer from 'components/footers/FiveColumnWithInputForm.js';
+import chefIconImageSrc from 'images/chef-icon.svg';
+import celebrationIconImageSrc from 'images/celebration-icon.svg';
+import shopIconImageSrc from 'images/shop-icon.svg';
 
-import chefIconImageSrc from "images/chef-icon.svg";
-import celebrationIconImageSrc from "images/celebration-icon.svg";
-import shopIconImageSrc from "images/shop-icon.svg";
+import { places } from '../data';
 
 export default () => {
   const Subheading = tw.span`tracking-wider text-sm font-medium`;
   const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
   const imageCss = tw`rounded-4xl`;
+  const [predictionData, setPredictionData] = useState({});
 
-  const [predictionData, setPredictionData] = useState([])
+  const handleOnComplete = (data) => {
+    const result = Object.values(data);
+    const chosenLocation = places?.filter(
+      (obj) => obj?.name == result[0]?.city
+    );
 
-  console.log('predictionData', predictionData)
-  const handleOnComplete = (data) =>{
-    const result = Object.values(data)
-    setPredictionData(result)
-  }
+    setPredictionData({ ...chosenLocation[0], ...{ hotel: result[0]?.hotel } });
+  };
+
   return (
     <AnimationRevealPage>
       <Hero
         heading={
           <>
-            Delicious & Affordable{" "}
+            Delicious & Affordable{' '}
             <HighlightedText>Meals Near You.</HighlightedText>
           </>
         }
@@ -50,109 +54,86 @@ export default () => {
         cards={[
           {
             imageSrc: shopIconImageSrc,
-            title: "230+ Locations",
-            description: "Lorem ipsum donor amet siti ceali placeholder text",
-            url: "https://google.com",
+            title: '230+ Locations',
+            description: 'Lorem ipsum donor amet siti ceali placeholder text',
+            url: 'https://google.com',
           },
           {
             imageSrc: chefIconImageSrc,
-            title: "Delicious Food",
-            description: "Lorem ipsum donor amet siti ceali placeholder text",
-            url: "https://timerse.com",
+            title: 'Delicious Food',
+            description: 'Lorem ipsum donor amet siti ceali placeholder text',
+            url: 'https://timerse.com',
           },
           {
             imageSrc: celebrationIconImageSrc,
-            title: "Safe Travel",
-            description: "Lorem ipsum donor amet siti ceali placeholder text",
-            url: "https://reddit.com",
+            title: 'Safe Travel',
+            description: 'Lorem ipsum donor amet siti ceali placeholder text',
+            url: 'https://reddit.com',
           },
         ]}
         imageContainerCss={tw`p-2!`}
         imageCss={tw`w-20! h-20!`}
       />
 
-      {
-        predictionData.length > 0 ?
+      {predictionData?.name ? (
         <PredictionSection
-        data={predictionData[0]}
-        subheading={<Subheading>#1 Suggestion</Subheading>}
-        heading={
-          <>
-            Try <HighlightedText>{predictionData[0].city}</HighlightedText>
-          </>
-        }
-        statistics={[
-          {
-            key: "Suggested Hotel",
-            value: "Lanchid 19",
-          },
-          {
-            key: "Weather",
-            value: "Cloudy",
-          },
-          {
-            key: "Temperature",
-            value: "24°C",
-          },
-          {
-            key: "Humidity",
-            value: "86%",
-          },
-        ]}
-        description={predictionData[0]?.review}
-        primaryButtonText="Search Again"
-        primaryButtonUrl="https://order.now.com"
-        imageInsideDiv={false}
-        imageSrc="http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcT5tvZFcymBLkJDvxKLje3o88D0gkyLfN74ms1QAB0sANSZOVy9e31nBJD1hVsK1fSB"
-        imageCss={Object.assign(tw`bg-cover`, imageCss)}
-        imageContainerCss={tw`md:w-1/2 h-auto`}
-        imageDecoratorBlob={true}
-        imageDecoratorBlobCss={tw`left-1/2 md:w-32 md:h-32 -translate-x-1/2 opacity-25`}
-        textOnLeft={true}
-        onReset={()=>setPredictionData([])}
-      /> 
-      :
-      <InputSection
-        subheading={<Subheading>Travel Recommender</Subheading>}
-        heading={
-          <>
-            Need To <HighlightedText>Travel ?</HighlightedText>
-          </>
-        }
-        statistics={[
-          {
-            key: "Suggested Hotel",
-            value: "Lanchid 19",
-          },
-          {
-            key: "Weather",
-            value: "Cloudy",
-          },
-          {
-            key: "Temperature",
-            value: "24°C",
-          },
-          {
-            key: "Humidity",
-            value: "86%",
-          },
-        ]}
-        primaryButtonText="Suggest A Location"
-        primaryButtonUrl="https://order.now.com"
-        imageInsideDiv={false}
-        imageSrc="https://images.pexels.com/photos/941555/pexels-photo-941555.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        imageCss={Object.assign(tw`bg-cover`, imageCss)}
-        imageContainerCss={tw`md:w-1/2 h-auto`}
-        imageDecoratorBlob={true}
-        imageDecoratorBlobCss={tw`left-1/2 md:w-32 md:h-32 -translate-x-1/2 opacity-25`}
-        textOnLeft={true}
-        onComplete={handleOnComplete}
-      />
-      }
-
-      
-
-      
+          data={predictionData}
+          subheading={<Subheading>#1 Suggestion</Subheading>}
+          heading={
+            <>
+              Try <HighlightedText>{predictionData?.name}</HighlightedText>
+            </>
+          }
+          description={predictionData?.description}
+          primaryButtonText="Search Again"
+          primaryButtonUrl="https://order.now.com"
+          imageInsideDiv={false}
+          imageSrc="http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcT5tvZFcymBLkJDvxKLje3o88D0gkyLfN74ms1QAB0sANSZOVy9e31nBJD1hVsK1fSB"
+          imageCss={Object.assign(tw`bg-cover`, imageCss)}
+          imageContainerCss={tw`md:w-1/2 h-auto`}
+          imageDecoratorBlob={true}
+          imageDecoratorBlobCss={tw`left-1/2 md:w-32 md:h-32 -translate-x-1/2 opacity-25`}
+          textOnLeft={true}
+          onReset={() => setPredictionData({})}
+        />
+      ) : (
+        <InputSection
+          subheading={<Subheading>Travel Recommender</Subheading>}
+          heading={
+            <>
+              Need To <HighlightedText>Travel ?</HighlightedText>
+            </>
+          }
+          statistics={[
+            {
+              key: 'Suggested Hotel',
+              value: predictionData?.hotel,
+            },
+            {
+              key: 'Weather',
+              value: 'Cloudy',
+            },
+            {
+              key: 'Temperature',
+              value: '24°C',
+            },
+            {
+              key: 'Humidity',
+              value: '86%',
+            },
+          ]}
+          primaryButtonText="Suggest A Location"
+          primaryButtonUrl="https://order.now.com"
+          imageInsideDiv={false}
+          imageSrc="https://images.pexels.com/photos/941555/pexels-photo-941555.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          imageCss={Object.assign(tw`bg-cover`, imageCss)}
+          imageContainerCss={tw`md:w-1/2 h-auto`}
+          imageDecoratorBlob={true}
+          imageDecoratorBlobCss={tw`left-1/2 md:w-32 md:h-32 -translate-x-1/2 opacity-25`}
+          textOnLeft={true}
+          onComplete={handleOnComplete}
+        />
+      )}
 
       <Testimonial
         subheading=""

@@ -1,14 +1,14 @@
-import React,{useState} from "react";
-import tw from "twin.macro";
-import styled from "styled-components";
-import { css } from "styled-components/macro"; //eslint-disable-line
+import React, { useCallback, useEffect, useState } from 'react';
+import tw from 'twin.macro';
+import axios from 'axios';
+import styled from 'styled-components';
 import {
   SectionHeading,
   Subheading as SubheadingBase,
-} from "components/misc/Headings.js";
-import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
-import StatsIllustrationSrc from "images/stats-illustration.svg";
-import { ReactComponent as SvgDotPattern } from "images/dot-pattern.svg";
+} from 'components/misc/Headings.js';
+import { PrimaryButton as PrimaryButtonBase } from 'components/misc/Buttons.js';
+import { ReactComponent as SvgDotPattern } from 'images/dot-pattern.svg';
+import { WEATHER_API, API_KEY } from '../../constants';
 
 const Container = tw.div`relative`;
 const TwoColumn = tw.div`flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto py-20 md:py-24`;
@@ -34,8 +34,8 @@ const Heading = tw(
 const Description = tw.p`mt-4 text-center md:text-left text-sm md:text-base lg:text-lg font-medium leading-relaxed text-secondary-100`;
 
 const Statistics = tw.div`flex flex-col items-center sm:block text-center md:text-left mt-4`;
-const Statistic = tw.div`text-left sm:inline-block sm:mr-12 last:mr-0 mt-4`;
-const Value = tw.div`font-bold text-lg sm:text-xl lg:text-2xl text-secondary-500 tracking-wide`;
+const Statistic = tw.div`text-left sm:inline-block sm:mr-8 last:mr-0 mt-4`;
+const Value = tw.div`font-bold text-lg sm:text-xl lg:text-xl text-secondary-500 tracking-wide`;
 const Key = tw.div`font-medium text-primary-700`;
 
 const PrimaryButton = tw(
@@ -47,56 +47,58 @@ const DecoratorBlob = styled(SvgDotPattern)((props) => [
 ]);
 
 export default ({
-  subheading = "Our Track Record",
+  subheading = 'Our Track Record',
   heading = (
     <>
-      We have been doing this <wbr /> since{" "}
+      We have been doing this <wbr /> since{' '}
       <span tw="text-primary-500">1999.</span>
     </>
   ),
   description,
-  primaryButtonText = "Learn More",
-  primaryButtonUrl = "https://timerse.com",
-  imageSrc = StatsIllustrationSrc,
+  primaryButtonText = 'Learn More',
   imageCss = null,
   imageContainerCss = null,
   imageDecoratorBlob = false,
   imageDecoratorBlobCss = null,
   imageInsideDiv = true,
-  statistics = null,
   textOnLeft = false,
   onReset,
-  data
+  data,
 }) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [weatherData, setWeatherData] = useState({});
 
-  // The textOnLeft boolean prop can be used to display either the text on left or right side of the image.
-  //Change the statistics variable as you like, add or delete objects
-  const defaultStatistics = [
-    {
-      key: "Clients",
-      value: "2282+",
-    },
-    {
-      key: "Projects",
-      value: "3891+",
-    },
-    {
-      key: "Awards",
-      value: "1000+",
-    },
-  ];
+  const fetchWeatherData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${WEATHER_API}/data/2.5/weather?lat=${data?.location?.long}&lon=${data?.location?.lat}&appid=${API_KEY}`
+      );
 
-  if (!statistics) statistics = defaultStatistics;
+      setWeatherData({
+        humidity: response?.data?.main?.humidity,
+        temp: `${response?.data?.main?.temp} F°`,
+        weather: response?.data?.weather?.[0]?.main,
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log('Error', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeatherData();
+  }, []);
 
   return (
     <Container>
       <TwoColumn css={!imageInsideDiv && tw`md:items-center`}>
         <ImageColumn css={imageContainerCss}>
           {imageInsideDiv ? (
-            <Image imageSrc={imageSrc} css={imageCss} />
+            <Image imageSrc={data?.images?.[0]} css={imageCss} />
           ) : (
-            <img src={imageSrc} css={imageCss} alt="" />
+            <img src={data?.images?.[0]} css={imageCss} alt="" />
           )}
           {imageDecoratorBlob && <DecoratorBlob css={imageDecoratorBlobCss} />}
         </ImageColumn>
@@ -104,22 +106,38 @@ export default ({
           <TextContent>
             {subheading && <Subheading>{subheading}</Subheading>}
             <Heading>{heading}</Heading>
-           {description && <Description>{description}</Description>}
+            {description && <Description>{description}</Description>}
             <Statistics>
-              {statistics.map((statistic, index) => (
-                <Statistic key={index}>
-                  <Value>{statistic.value}</Value>
-                  <Key>{statistic.key}</Key>
-                </Statistic>
-              ))}
+              <Statistic>
+                <Value>{data?.hotel}</Value>
+                <Key>Suggested Hotel</Key>
+              </Statistic>
+              <Statistic>
+                <Value>{weatherData?.weather}</Value>
+                <Key>Weather</Key>
+              </Statistic>
+              <Statistic>
+                <Value>{weatherData?.temp}</Value>
+                <Key>Temperature</Key>
+              </Statistic>
+              <Statistic>
+                <Value>{weatherData?.humidity}%</Value>
+                <Key>Humidity</Key>
+              </Statistic>
             </Statistics>
             <PrimaryButton onClick={onReset}>
-            {isLoading ? <div class="flex justify-center items-center">
-                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
+              {isLoading ? (
+                <div class="flex justify-center items-center">
+                  <div
+                    class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full"
+                    role="status"
+                  >
+                    <span class="visually-hidden">Loading...</span>
                   </div>
-               : primaryButtonText}
+                </div>
+              ) : (
+                primaryButtonText
+              )}
             </PrimaryButton>
           </TextContent>
         </TextColumn>
