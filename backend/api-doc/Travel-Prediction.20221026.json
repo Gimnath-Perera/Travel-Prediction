@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "b446f832-d2d7-4a03-9700-ab8786d07213",
+		"name": "Travel-Prediction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15580341"
+	},
+	"item": [
+		{
+			"name": "POST Get Prediction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\":\"I need a river\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:80/predict",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "80",
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Get weather data by location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.openweathermap.org/data/2.5/weather?lat=11.9674&lon=121.9248&appid=597a2b3bab0cf34b78ac1518cca953ed",
+					"protocol": "https",
+					"host": [
+						"api",
+						"openweathermap",
+						"org"
+					],
+					"path": [
+						"data",
+						"2.5",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "11.9674"
+						},
+						{
+							"key": "lon",
+							"value": "121.9248"
+						},
+						{
+							"key": "appid",
+							"value": "597a2b3bab0cf34b78ac1518cca953ed"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
