@@ -3,14 +3,9 @@ import tw from 'twin.macro';
 
 import AnimationRevealPage from 'helpers/AnimationRevealPage.js';
 import Hero from 'components/hero/TwoColumnWithVideo.js';
-import Features from 'components/features/ThreeColSimple.js';
 import PredictionSection from 'components/features/PredictionSection.js';
 import InputSection from 'components/features/InputSection.js';
 import Testimonial from 'components/testimonials/ThreeColumnWithProfileImage.js';
-import Footer from 'components/footers/FiveColumnWithInputForm.js';
-import chefIconImageSrc from 'images/chef-icon.svg';
-import celebrationIconImageSrc from 'images/celebration-icon.svg';
-import shopIconImageSrc from 'images/shop-icon.svg';
 
 import { places } from '../data';
 
@@ -19,6 +14,7 @@ export default () => {
   const HighlightedText = tw.span`bg-primary-500 text-gray-100 px-4 transform -skew-x-12 inline-block`;
   const imageCss = tw`rounded-4xl`;
   const [predictionData, setPredictionData] = useState({});
+  const [review, setReview] = useState([]);
 
   const handleOnComplete = (data) => {
     const result = Object.values(data);
@@ -27,6 +23,7 @@ export default () => {
     );
 
     setPredictionData({ ...chosenLocation[0], ...{ hotel: result[0]?.hotel } });
+    setReview([result[0]?.review]);
   };
 
   return (
@@ -44,35 +41,6 @@ export default () => {
         imageDecoratorBlob={true}
         primaryButtonText="Learn More"
         watchVideoButtonText="View Demo"
-      />
-      <Features
-        heading={
-          <>
-            Amazing <HighlightedText>Services.</HighlightedText>
-          </>
-        }
-        cards={[
-          {
-            imageSrc: shopIconImageSrc,
-            title: '230+ Locations',
-            description: 'Lorem ipsum donor amet siti ceali placeholder text',
-            url: 'https://google.com',
-          },
-          {
-            imageSrc: chefIconImageSrc,
-            title: 'Delicious Food',
-            description: 'Lorem ipsum donor amet siti ceali placeholder text',
-            url: 'https://timerse.com',
-          },
-          {
-            imageSrc: celebrationIconImageSrc,
-            title: 'Safe Travel',
-            description: 'Lorem ipsum donor amet siti ceali placeholder text',
-            url: 'https://reddit.com',
-          },
-        ]}
-        imageContainerCss={tw`p-2!`}
-        imageCss={tw`w-20! h-20!`}
       />
 
       {predictionData?.name ? (
@@ -142,9 +110,8 @@ export default () => {
             Customers <HighlightedText>Reviews.</HighlightedText>
           </>
         }
+        testimonials={review}
       />
-
-      <Footer />
     </AnimationRevealPage>
   );
 };

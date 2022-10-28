@@ -1,13 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
-import tw from "twin.macro";
-import styled from "styled-components";
+import React from 'react';
+import { motion } from 'framer-motion';
+import tw from 'twin.macro';
+import styled from 'styled-components';
 
-import useAnimatedNavToggler from "../../helpers/useAnimatedNavToggler.js";
+import useAnimatedNavToggler from '../../helpers/useAnimatedNavToggler.js';
 
-import logo from "../../images/logo.svg";
-import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
-import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
+import logo from '../../images/logo.svg';
+import { ReactComponent as MenuIcon } from 'feather-icons/dist/icons/menu.svg';
+import { ReactComponent as CloseIcon } from 'feather-icons/dist/icons/x.svg';
 
 const Header = tw.header`
   flex justify-between items-center
@@ -60,21 +60,9 @@ export default ({
   logoLink,
   links,
   className,
-  collapseBreakpointClass = "lg",
+  collapseBreakpointClass = 'lg',
 }) => {
-  const defaultLinks = [
-    <NavLinks key={1}>
-      <NavLink href="/#">About</NavLink>
-      <NavLink href="/#">Blog</NavLink>
-      <NavLink href="/#">Contact Us</NavLink>
-      <NavLink href="/#" tw="lg:ml-12!">
-        Login
-      </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/#">
-        Sign Up
-      </PrimaryLink>
-    </NavLinks>,
-  ];
+  const defaultLinks = [<NavLinks key={1}></NavLinks>];
 
   const { showNavLinks, animation, toggleNavbar } = useAnimatedNavToggler();
   const collapseBreakpointCss =
@@ -91,7 +79,7 @@ export default ({
   links = links || defaultLinks;
 
   return (
-    <Header className={className || "header-light"}>
+    <Header className={className || 'header-light'}>
       <DesktopNavLinks css={collapseBreakpointCss.desktopNavLinks}>
         {logoLink}
         {links}
@@ -102,7 +90,7 @@ export default ({
       >
         {logoLink}
         <MobileNavLinks
-          initial={{ x: "150%", display: "none" }}
+          initial={{ x: '150%', display: 'none' }}
           animate={animation}
           css={collapseBreakpointCss.mobileNavLinks}
         >
@@ -110,7 +98,7 @@ export default ({
         </MobileNavLinks>
         <NavToggle
           onClick={toggleNavbar}
-          className={showNavLinks ? "open" : "closed"}
+          className={showNavLinks ? 'open' : 'closed'}
         >
           {showNavLinks ? (
             <CloseIcon tw="w-6 h-6" />
